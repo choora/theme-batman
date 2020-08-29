@@ -17,12 +17,12 @@ end
 
 function fish_right_prompt
   set -l code $status
-  test $code -ne 0; and echo (__magenta_color_dim)"("(__magenta_color_red)"$code"(__magenta_color_dim)") "(__magenta_color_off)
+  test $status -ne 0; and echo (set_color -o)(__magenta_color_dim)"("(__magenta_color_red)"$code"(__magenta_color_dim)") "(__magenta_color_off)
 
   if git::is_git_repo
-    echo (__magenta_color_dim)"["(begin
+    echo (set_color -o)(__magenta_color_dim)"["(begin
       if git::is_touched
-        echo (__magenta_color_red)"*"(__magenta_color_off)
+        echo (set_color -o)(__magenta_color_red)"*"
       else
         echo ""
       end

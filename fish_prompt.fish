@@ -7,7 +7,7 @@ function fish_prompt
   set -l pwd (pwd)
   set -l base (basename "$pwd")
 
-  set -l expr "s|$HOME|"(__magenta_color_red)"~"(__magenta_color_off)"|g; \
+  set -l expr "s|$HOME|"(set_color -o)(__magenta_color_red)"~"(__magenta_color_off)"|g; \
                s|/|"(__magenta_color_yellow)"/"(__magenta_color_off)"|g;  \
                s|"$base"|"(__magenta_color_red)$base(__magenta_color_off)" |g"
 
