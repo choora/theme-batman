@@ -1,5 +1,6 @@
-function git::is_stashed
-  command git rev-parse --verify --quiet refs/stash >/dev/null
+# Check if the current directory is a git repo
+function git::is_git_repo
+  command git rev-parse >/dev/null 2>&1
 end
 
 function git::get_ahead_count
@@ -7,7 +8,7 @@ function git::get_ahead_count
 end
 
 function git::branch_name
-  command git symbolic-ref --short HEAD
+  command git symbolic-ref --short HEAD 2>/dev/null
 end
 
 function git::is_touched
@@ -16,28 +17,23 @@ end
 
 function fish_right_prompt
   set -l code $status
-  test $code -ne 0; and echo (__magenta_color_dim)"("(__magenta_color_yellow)"$code"(__magenta_color_dim)") "(__magenta_color_off)
+  test $code -ne 0; and echo (__magenta_color_dim)"("(__magenta_color_red)"$code"(__magenta_color_dim)") "(__magenta_color_off)
 
-  if test -n "$SSH_CONNECTION"
-     printf (__magenta_color_yellow)":"(__magenta_color_dim)"$HOSTNAME "(__magenta_color_off)
-   end
-
-  if git rev-parse 2> /dev/null
-    git::is_stashed; and echo (__magenta_color_yellow)"^"(__magenta_color_off)
-    printf (__magenta_color_blue)"("(begin
+  if git::is_git_repo
+    echo (__magenta_color_dim)"["(begin
       if git::is_touched
-        echo (__magenta_color_yellow)"*"(__magenta_color_off)
+        echo (__magenta_color_red)"*"(__magenta_color_off)
       else
         echo ""
       end
-    end)(__magenta_color_red)(git::branch_name)(__magenta_color_blue)(begin
+    end)(__magenta_color_blue)(git::branch_name)(__magenta_color_dim)(begin
       set -l count (git::get_ahead_count)
         if test $count -eq 0
           echo ""
         else
-          echo (__magenta_color_yellow)"+"(__magenta_color_red)$count
+          echo " "$count
         end
-    end)(__magenta_color_blue)") "(__magenta_color_off)
+    end)"] "(__magenta_color_off)
   end
-  printf (__magenta_color_dim)(date +%H(__magenta_color_red):(__magenta_color_dim)%M(__magenta_color_red):(__magenta_color_dim)%S)(__magenta_color_off)" "
+  echo (__magenta_color_dim)(date +%H(__magenta_color_red):(__magenta_color_dim)%M(__magenta_color_red):(__magenta_color_dim)%S)(__magenta_color_off)" "
 end
