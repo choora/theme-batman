@@ -3,11 +3,12 @@ function fish_prompt
     and set -l colors 600 900 c00
     or set -l colors 333 666 aaa
 
-  set -l pwd (prompt_pwd)
+  #set -l pwd (prompt_pwd)
+  set -l pwd (pwd)
   set -l base (basename "$pwd")
 
-  set -l expr "s|~|"(__magenta_color_red)"^^"(__magenta_color_off)"|g; \
-               s|/|"(__magenta_color_blue)"/"(__magenta_color_off)"|g;  \
+  set -l expr "s|$HOME|"(__magenta_color_red)"~"(__magenta_color_off)"|g; \
+               s|/|"(__magenta_color_yellow)"/"(__magenta_color_off)"|g;  \
                s|"$base"|"(__magenta_color_red)$base(__magenta_color_off)" |g"
 
   echo -n (echo "$pwd" | sed -e $expr)(__magenta_color_off)
